@@ -13,6 +13,10 @@ The data is from
 Please see the license file in rawData/license.txt if you want to use or
 redistribute this data.
 
+The OASIS template is derived from the original by Nick Tustison, at
+
+  https://figshare.com/articles/ANTs_ANTsR_Brain_Templates/915436
+
 ## NIFTI data
 
 The data was converted with dcm2niix, then renamed by series (axis, ortho,
@@ -36,6 +40,8 @@ yaw:
 yaw.bval  yaw.bvec  yaw.json  yaw.nii.gz
 
 The data is in the same physical space, but the acquisition planes vary.
+
+Brain masks were created with FSL's `bet`.
 
 
 ## DT fit
@@ -84,7 +90,7 @@ writing the deformed images.
 For the OASIS registrations, the rigid alignment is only roughly correct, so it
 may be easier to view the warped FA image as the base layer rather than the T1. 
 
-### `regWithRotation`
+### `regWithRotation/`
 
 Fixed images here are rotated with respect to the original FA images. They are
 designed to test the reorientation that occurs when the fixed and moving images

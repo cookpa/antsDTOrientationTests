@@ -1,0 +1,56 @@
+#!/bin/bash
+
+function get4DV1() {
+
+    # fslview does not display 5D NIFTI vectors correctly, requires 4D
+    
+    dt=$1
+    output=$2
+    
+    tmpFileRoot=`basename ${dt%.nii.gz}`
+    
+    ${ANTSPATH}ImageMath 3 /tmp/${tmpFileRoot}V1.nii.gz TensorToVector $dt 2
+    
+    for (( i=0; i<3; i++ )); do
+        ${ANTSPATH}ImageMath 3 /tmp/${tmpFileRoot}V1${i}.nii.gz ExtractVectorComponent /tmp/${tmpFileRoot}V1.nii.gz $i
+    done
+    
+    ${ANTSPATH}ImageMath 4 ${output} TimeSeriesAssemble 1 0 /tmp/${tmpFileRoot}V10.nii.gz /tmp/${tmpFileRoot}V11.nii.gz /tmp/${tmpFileRoot}V12.nii.gz 
+    
+}
+
+if [[ $# -eq 0 ]]; then
+    echo " 
+  $0 <moving> <fixed> 
+
+  Run this from the directory above scripts/. Output is to reg/
+
+  Uses ANTs with ANTSPATH=${ANTSPATH}
+
+"
+
+    exit 1
+
+fi
+
+movingSeries=$1
+fixedSeries=$2
+
+fixedFA="nativeDT/ants/${fixedSeries}/${fixedSeries}_FA.nii.gz"
+movingFA="nativeDT/ants/${movingSeries}/${movingSeries}_FA.nii.gz"
+
+if [[ !(-f $fixedFA && -f $movingFA) ]] ; then
+    echo " Cannot find images corresponding to $movingSeries / $fixedSeries "
+    exit 1
+fi
+
+
+movingDT="nativeDT/ants/${movingSeries}/${movingSeries}_DT.nii.gz"
+
+fixedFirstLetterUpper=`echo ${fixedSeries:0:1} | tr '[:lower:]' '[:upper:]'`
+
+fixedSeriesTitleCase="${fixedFirstLetterUpper}${fixedSeries:1}"
+
+outputRoot="reg/${movingSeries}To${fixedSeriesTitleCase/${movingSeries}To${fixedSeriesTitleCase}_"
+
+scripts/regHelper.sh $movingFA $movingDT $fixedFA $outputRoot
