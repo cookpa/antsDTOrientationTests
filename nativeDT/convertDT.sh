@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export ANTSPATH=/Users/pcook/bin/ants/bin/
-
 for series in axis ortho pitch roll yaw; do 
 
   tmpDir=ants/${series}/tmp
