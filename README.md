@@ -2,13 +2,24 @@
 
 Data and code to test DT warping and reorientation in ANTs
 
+This branch is for testing ANTs < 2.6.1 using antsApplyTransforms and ReorientTensorImage.
+There are bugs in tensor orientation for non-identity direction matrices. See the main
+branch for updated code and tests.
+
+ANTs 2.6.1 has a bug that produces blank output for tensors resampled with
+antsApplyTransforms.
+
+With ANTs >= 2.6.2, these tests should work again, but it's easier to use the simplified
+workflow on the main branch.
+
+Note that these old scripts may require ANTSPATH
 
 ## Raw data
 
 A single subject scanned on a Siemens Prisma, with varying image orientations.
-The data is from 
+The data is from
 
-  https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage#Diffusion_Tensor_Imaging 
+  https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage#Diffusion_Tensor_Imaging
 
 Please see the license file in rawData/license.txt if you want to use or
 redistribute this data.
@@ -60,7 +71,7 @@ and the same matrix encoded in a warp field, as these are handled separately in
 the ReorientTensorImage executable.
 
 Alignment of principal directions is assessed by extracting the primary
-eigenvector of the tensor with ImageMath after registration / reorientation. 
+eigenvector of the tensor with ImageMath after registration / reorientation.
 
 I have used fsleyes to visualize results.
 
@@ -82,13 +93,13 @@ The experiments test different aspects of the code,
 
 This aligns the FA images to each other, and to the OASIS T1 template. The
 rotation in physical space is very small, but getting the headers wrong can lead
-to large errors. 
+to large errors.
 
 These tests mostly check that antsApplyTransforms is correctly reading and
-writing the deformed images. 
+writing the deformed images.
 
 For the OASIS registrations, the rigid alignment is only roughly correct, so it
-may be easier to view the warped FA image as the base layer rather than the T1. 
+may be easier to view the warped FA image as the base layer rather than the T1.
 
 ### `regWithRotation/`
 
@@ -99,7 +110,7 @@ are not aligned in physical space.
 The fixed images for these experiments are in targetImagesWithRotation/.
 
 To aid visual inspection, the rotations are quite large, so antsAI is called
-before antsRegistrationSyNQuick.sh. 
+before antsRegistrationSyNQuick.sh.
 
 
 ## Registration output
@@ -115,7 +126,7 @@ movingToFixed_DTReorientedMat.nii.gz - DT reoriented using the affine .mat file
 
 movingToFixed_DTReorientedWarp.nii.gz - DT reoriented using the warp field.
                                         Should be very similar to the matrix
-                                        version unless there is a bug. 
+                                        version unless there is a bug.
 
 The principal directions from each of these tensors is stored as a 4D vector,
 which FSL recognizes as a DT eigenvector. Eg,
@@ -129,10 +140,10 @@ NIFTI_INTENT_VECTOR. If you want this format, run
 
 
 
-## Testing different ANTs versions 
+## Testing different ANTs versions
 
-To re-run the experiments with different ANTs versions, move 
-  
+To re-run the experiments with different ANTs versions, move
+
   reg/
   regWithRotation/
 
