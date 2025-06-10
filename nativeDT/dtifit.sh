@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for series in axis ortho pitch roll yaw; do 
+for series in axis ortho pitch roll yaw; do
 
   mkdir fsl/$series
 

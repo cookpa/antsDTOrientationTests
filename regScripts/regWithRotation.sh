@@ -1,12 +1,10 @@
 #!/bin/bash
 
 if [[ $# -eq 0 ]]; then
-    echo " 
-  $0 <moving> <fixed> 
+    echo "
+  $0 <moving> <fixed>
 
   Run this from the directory above scripts/. Output is to regWithRotation/
-
-  Uses ANTs with ANTSPATH=${ANTSPATH}
 
 "
 
@@ -37,6 +35,6 @@ outputRoot="regWithRotation/${movingSeries}To${fixedSeriesTitleCase}Rotated/${mo
 initialTransform=${outputRoot}init.mat
 
 # Run quick antsAI because the rotation can be large
-${ANTSPATH}antsAI -d 3 -m Mattes[ $fixedFA , $movingFA , 32 , Regular, 0.125 ] -t Rigid[0.2] -s [25, 0.14] -c [8] -o $initialTransform -v 1
+antsAI -d 3 -m Mattes[ $fixedFA , $movingFA , 32 , Regular, 0.25 ] -t Rigid[0.2] -s [25, 0.14] -c [8] -o $initialTransform -v 1
 
 regScripts/regHelper.sh $movingFA $movingDT $fixedFA $outputRoot $initialTransform

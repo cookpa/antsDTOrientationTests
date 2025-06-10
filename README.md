@@ -1,14 +1,14 @@
 # antsDTOrientationTests
 
-Data and code to test DT warping and reorientation in ANTs
+Data and code to test DT warping and reorientation in ANTs.
 
 
 ## Raw data
 
 A single subject scanned on a Siemens Prisma, with varying image orientations.
-The data is from 
+The data is from
 
-  https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage#Diffusion_Tensor_Imaging 
+  https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage#Diffusion_Tensor_Imaging
 
 Please see the license file in rawData/license.txt if you want to use or
 redistribute this data.
@@ -55,40 +55,51 @@ The scripts to do this are in nativeDT/, and can be run from that directory.
 
 ## Registration experiments
 
-The registration is rigid, but we test both the application of the affine matrix
-and the same matrix encoded in a warp field, as these are handled separately in
-the ReorientTensorImage executable.
+The registration is rigid. Deformable registration will be tested in a separate
+repository.
 
 Alignment of principal directions is assessed by extracting the primary
-eigenvector of the tensor with ImageMath after registration / reorientation. 
+eigenvector of the tensor with ImageMath after registration / reorientation.
 
-I have used fsleyes to visualize results.
+I have used fsleyes to visualize results. Note that FSL requires radiological orientation
+for bvecs, regardless of whether or not the image index space is radiological. If
+`fslorient -getorient` reports NEUROLOGICAL, fsleyes will automatically flip the tensor
+vectors for display. You can toggle this in fsleyes settings.
+
+ANTs attempts to handle this automatically by flipping the coordinate system of the
+tensors from NEUROLOGICAL images upon import and export. Inside ANTs, we require that the
+tensors match the index space of the image, such that they can be rebased to physical space by
+applying the header direction matrix.
+
+The test data here is all RADIOLIGICAL, so this should not be an issue.
 
 Example:
 
 ```
-# Set ANTSPATH to a version you want to test before running this
-#
-# Run the script from the directory above regScripts/ so it can
-# find the data
-#
 regScripts/reg.sh ortho roll
 ```
 
-The experiments test different aspects of the code,
+Or to run all registrations:
 
+```
+./runAll.sh
+```
+
+
+## Output directories
 
 ### `reg/`
 
 This aligns the FA images to each other, and to the OASIS T1 template. The
 rotation in physical space is very small, but getting the headers wrong can lead
-to large errors. 
+to large errors.
 
 These tests mostly check that antsApplyTransforms is correctly reading and
-writing the deformed images. 
+writing the deformed images.
 
 For the OASIS registrations, the rigid alignment is only roughly correct, so it
-may be easier to view the warped FA image as the base layer rather than the T1. 
+may be easier to view the warped FA image as the base layer rather than the T1.
+
 
 ### `regWithRotation/`
 
@@ -99,43 +110,24 @@ are not aligned in physical space.
 The fixed images for these experiments are in targetImagesWithRotation/.
 
 To aid visual inspection, the rotations are quite large, so antsAI is called
-before antsRegistrationSyNQuick.sh. 
+before antsRegistrationSyNQuick.sh.
 
 
 ## Registration output
 
 fixed.nii.gz - the fixed image
 
-movingToFixed_Warped.nii.gz - deformed moving FA image
+movingToFixedWarpedFA.nii.gz - deformed moving FA image
 
-movingToFixed_DTDeformed.nii.gz - DT resampled into fixed space, but NOT
-                                  reoriented.
-
-movingToFixed_DTReorientedMat.nii.gz - DT reoriented using the affine .mat file
-
-movingToFixed_DTReorientedWarp.nii.gz - DT reoriented using the warp field.
-                                        Should be very similar to the matrix
-                                        version unless there is a bug. 
+movingToFixedWarpedDT.nii.gz - DT resampled and reoriented into the fixed space.
 
 The principal directions from each of these tensors is stored as a 4D vector,
 which FSL recognizes as a DT eigenvector. Eg,
 
-  movingToFixed_V1ReorientedMat.nii.gz
+  movingToFixedWarpedV1.nii.gz
 
-ANTs writes these in NIFTI format, which is 5D with intent code
+ANTs normally writes these in NIFTI format, which is 5D with intent code
 NIFTI_INTENT_VECTOR. If you want this format, run
 
- ImageMath 3 V1.nii.gz TensorToVector DT.nii.gz 2
-
-
-
-## Testing different ANTs versions 
-
-To re-run the experiments with different ANTs versions, move 
-  
-  reg/
-  regWithRotation/
-
-then set ANTSPATH and and re-run the experiments.
-
+  ImageMath 3 V1.nii.gz TensorToVector DT.nii.gz 2
 

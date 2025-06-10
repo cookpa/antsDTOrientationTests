@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if [[ $# -eq 0 ]]; then
-    echo " 
-  $0 <moving> <fixed> 
+    echo "
+  $0 <moving> <fixed>
 
   Run this from the directory above scripts/. Output is to reg/
 
-  Uses ANTs with ANTSPATH=${ANTSPATH}
+  Requires ANTs on PATH.
 
 "
 

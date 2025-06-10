@@ -3,12 +3,10 @@
 binDir=`dirname $0`
 
 if [[ $# -eq 0 ]]; then
-    echo " 
-  $0 <moving series> 
+    echo "
+  $0 <moving series>
 
   Run this from the directory above scripts/ . Output is to reg/ .
-
-  Uses ANTs with ANTSPATH=${ANTSPATH}
 
 "
     exit 1
