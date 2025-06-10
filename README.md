@@ -117,17 +117,16 @@ before antsRegistrationSyNQuick.sh.
 
 fixed.nii.gz - the fixed image
 
-movingToFixedWarpedFA.nii.gz - deformed moving FA image
+movingToFixed_DTDeformed.nii.gz - DT resampled and reoriented into the fixed space.
 
-movingToFixedWarpedDT.nii.gz - DT resampled and reoriented into the fixed space.
+movingToFixed_FADeformed.nii.gz - FA from movingToFixed_DTDeformed.nii.gz
 
 The principal directions from each of these tensors is stored as a 4D vector,
 which FSL recognizes as a DT eigenvector. Eg,
 
-  movingToFixedWarpedV1.nii.gz
+  movingToFixed_V1Deformed.nii.gz
 
 ANTs normally writes these in NIFTI format, which is 5D with intent code
 NIFTI_INTENT_VECTOR. If you want this format, run
 
   ImageMath 3 V1.nii.gz TensorToVector DT.nii.gz 2
-

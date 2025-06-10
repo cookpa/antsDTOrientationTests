@@ -59,17 +59,9 @@ antsRegistrationSyNQuick.sh -p f -f $fixed -m $moving -t r -o $outputRoot $initi
 cp $fixed ${outputDir}/fixed.nii.gz
 
 # Now warp tensors and get V1 in FSL vector format
-antsApplyTransforms -d 3 -e 2 -r $fixed -t ${outputRoot}0GenericAffine.mat -i $movingDT -o ${outputRoot}DTDeformed.nii.gz
+antsApplyTransforms -d 3 -e 2 -r $fixed -t ${outputRoot}0GenericAffine.mat -i $movingDT -o ${outputRoot}DTDeformed.nii.gz --verbose
 
 get4DV1 ${outputRoot}DTDeformed.nii.gz ${outputRoot}V1Deformed.nii.gz
 
-ReorientTensorImage 3 ${outputRoot}DTDeformed.nii.gz ${outputRoot}DTReorientedMat.nii.gz ${outputRoot}0GenericAffine.mat
-
-get4DV1 ${outputRoot}DTReorientedMat.nii.gz ${outputRoot}V1ReorientedMat.nii.gz
-
-# Get a warp field
-antsApplyTransforms -d 3 -r $fixed -t ${outputRoot}0GenericAffine.mat -i $moving -o [${outputRoot}0Warp.nii.gz, 1]
-
-ReorientTensorImage 3 ${outputRoot}DTDeformed.nii.gz ${outputRoot}DTReorientedWarp.nii.gz ${outputRoot}0Warp.nii.gz
-
-get4DV1 ${outputRoot}DTReorientedWarp.nii.gz ${outputRoot}V1ReorientedWarp.nii.gz
+# Output FA
+ImageMath 3 ${outputRoot}FADeformed.nii.gz TensorFA ${outputRoot}DTDeformed.nii.gz
