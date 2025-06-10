@@ -2,6 +2,8 @@
 
 Data and code to test DT warping and reorientation in ANTs.
 
+This code is updated for ANTs >= 2.6.2. See the reorient_tensor_image branch for older code.
+
 
 ## Raw data
 
