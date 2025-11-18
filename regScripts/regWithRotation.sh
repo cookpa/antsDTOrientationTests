@@ -32,9 +32,15 @@ fixedSeriesTitleCase="${fixedFirstLetterUpper}${fixedSeries:1}"
 
 outputRoot="regWithRotation/${movingSeries}To${fixedSeriesTitleCase}Rotated/${movingSeries}To${fixedSeriesTitleCase}Rotated_"
 
+outputDir=`dirname $outputRoot`
+
+if [[ ! -d $outputDir ]]; then
+    mkdir -p ${outputDir}
+fi
+
 initialTransform=${outputRoot}init.mat
 
 # Run quick antsAI because the rotation can be large
-antsAI -d 3 -m Mattes[ $fixedFA , $movingFA , 32 , Regular, 0.25 ] -t Rigid[0.2] -s [25, 0.14] -c [8] -o $initialTransform -v 1
+antsAI -d 3 -m Mattes[ $fixedFA , $movingFA , 32 , Regular, 0.25 ] -t Rigid[0.2] -s [25, 0.14] -c [10] -o $initialTransform -v 1
 
 regScripts/regHelper.sh $movingFA $movingDT $fixedFA $outputRoot $initialTransform

@@ -115,7 +115,7 @@ To aid visual inspection, the rotations are quite large, so antsAI is called
 before antsRegistrationSyNQuick.sh.
 
 
-## Registration output
+## Tensor registration output
 
 fixed.nii.gz - the fixed image
 
@@ -132,3 +132,20 @@ ANTs normally writes these in NIFTI format, which is 5D with intent code
 NIFTI_INTENT_VECTOR. If you want this format, run
 
   ImageMath 3 V1.nii.gz TensorToVector DT.nii.gz 2
+
+
+## Vector registration output
+
+In the same directory, we also output
+
+ movingToFixed_V1_VectorWarped.nii.gz
+
+This comes from calling `antsApplyTransforms` on the primary eigenvector image
+directly, treating it as a vector image. The results should be similar to the
+reoriented DT output above, but may differ due to interpolation effects - the DT uses
+log-linear interpolation, while the vector image uses nearest neighbor interpolation.
+
+The reason for using NN interpolation for vectors is that they are unsigned, and thus
+would need to be flipped so that they remain in the same hemisphere before linear
+interpolation.
+

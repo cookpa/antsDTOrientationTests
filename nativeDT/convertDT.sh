@@ -11,11 +11,11 @@ for series in axis ortho pitch roll yaw; do
   ImageMath 3 ants/${series}/${series}_MD.nii.gz TensorMeanDiffusion ants/${series}/${series}_DT.nii.gz
   ImageMath 3 ants/${series}/${series}_RGB.nii.gz TensorColor ants/${series}/${series}_DT.nii.gz
 
-  # fsleyes requires vectors to be 4D
-  ImageMath 3 ${tmpDir}/${series}_V1.nii.gz TensorToVector ants/${series}/${series}_DT.nii.gz 2
+  ImageMath 3 ants/${series}/${series}_V1_ITK.nii.gz TensorToVector ants/${series}/${series}_DT.nii.gz 2
 
+  # fsleyes requires vectors to be 4D
   for (( i=0; i < 3; i++ )); do
-    ImageMath 3 ${tmpDir}/${series}_V1_${i}.nii.gz ExtractVectorComponent ${tmpDir}/${series}_V1.nii.gz $i
+    ImageMath 3 ${tmpDir}/${series}_V1_${i}.nii.gz ExtractVectorComponent ants/${series}/${series}_V1_ITK.nii.gz $i
   done
 
   ImageMath 4 ants/${series}/${series}_V1.nii.gz TimeSeriesAssemble 1 0 ${tmpDir}/${series}_V1_0.nii.gz ${tmpDir}/${series}_V1_1.nii.gz ${tmpDir}/${series}_V1_2.nii.gz
